@@ -20,6 +20,7 @@ from app.service.key.key_manager import (
     get_key_manager_instance,
     reset_key_manager_instance,
 )
+from app.service.key.external_key_service import fetch_external_key
 from app.service.model.model_service import ModelService
 
 logger = get_config_routes_logger()
@@ -193,6 +194,13 @@ class ConfigService:
                 "deleted_count": 0,
                 "not_found_keys": not_found_keys,
             }
+
+    @staticmethod
+    async def refresh_external_key() -> str:
+        """從外部服務取得 Gemini API Key 並刷新設定"""
+        key = await fetch_external_key()
+        await ConfigService.update_config({"API_KEYS": [key]})
+        return key
 
     @staticmethod
     async def reset_config() -> Dict[str, Any]:

@@ -59,6 +59,20 @@ class DeleteKeysRequest(BaseModel):
     keys: List[str] = Field(..., description="List of API keys to delete")
 
 
+@router.post("/refresh-key", response_model=Dict[str, Any])
+async def refresh_external_key_route(request: Request):
+    auth_token = request.cookies.get("auth_token")
+    if not auth_token or not verify_auth_token(auth_token):
+        logger.warning("Unauthorized attempt to refresh external key")
+        return RedirectResponse(url="/", status_code=302)
+    try:
+        key = await ConfigService.refresh_external_key()
+        return {"success": True, "key": key}
+    except Exception as e:
+        logger.error(f"Error refreshing external key: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.delete("/keys/{key_to_delete}", response_model=Dict[str, Any])
 async def delete_single_key(key_to_delete: str, request: Request):
     auth_token = request.cookies.get("auth_token")
