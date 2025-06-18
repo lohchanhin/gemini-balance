@@ -1328,11 +1328,11 @@ async function refreshExternalKey() {
     }
     const data = await response.json();
     if (data.key) {
-      const container = document.getElementById("API_KEYS_container");
-      if (container) {
-        container.innerHTML = "";
-        addArrayItemWithValue("API_KEYS", data.key);
-        const input = container.querySelector(
+      addArrayItemWithValue("API_KEYS", data.key);
+      addArrayItemWithValue("EXTERNAL_API_KEYS", data.key);
+      const apiKeyContainer = document.getElementById("API_KEYS_container");
+      if (apiKeyContainer) {
+        const input = apiKeyContainer.querySelector(
           `.${ARRAY_INPUT_CLASS}.${SENSITIVE_INPUT_CLASS}`
         );
         if (input && configForm) {
@@ -1492,8 +1492,9 @@ function addArrayItemWithValue(key, value) {
   const isThinkingModel = key === "THINKING_MODELS";
   const isAllowedToken = key === "ALLOWED_TOKENS";
   const isVertexApiKey = key === "VERTEX_API_KEYS"; // 新增判断
+  const isExternalApiKey = key === "EXTERNAL_API_KEYS";
   const isSensitive =
-    key === "API_KEYS" || isAllowedToken || isVertexApiKey; // 更新敏感判断
+    key === "API_KEYS" || isAllowedToken || isVertexApiKey || isExternalApiKey; // 更新敏感判断
   const modelId = isThinkingModel ? generateUUID() : null;
  
   const arrayItem = document.createElement("div");
