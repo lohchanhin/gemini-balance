@@ -169,6 +169,10 @@ app/
 | `API_KEYS`                   | 必填，Gemini API 密钥列表，用于负载均衡                        | `["your-gemini-api-key-1", "your-gemini-api-key-2"]`  |
 | `ALLOWED_TOKENS`             | 必填，允许访问的 Token 列表                                    | `["your-access-token-1", "your-access-token-2"]`      |
 | `AUTH_TOKEN`                 | 可选，超级管理员token，具有所有权限，不填默认使用 ALLOWED_TOKENS 的第一个 | `sk-123456`                                                  |
+| `EXTERNAL_KEY_URL`             | 可选，获取外部 Key 的 API 端点 | `""` |
+| `EXTERNAL_KEY_SERVICE_TOKEN`   | 可选，呼叫外部服务使用的 Token | `""` |
+| `EXTERNAL_KEY_JWT_SECRET`      | 可选，用于解密外部 Key 的 JWT 密钥 | `""` |
+| `EXTERNAL_KEY_REFRESH_INTERVAL_HOURS` | 可选，自动刷新外部 Key 的时间间隔（小时） | `1` |
 | `TEST_MODEL`                 | 可选，用于测试密钥是否可用的模型名                             | `gemini-1.5-flash`                                    |
 | `IMAGE_MODELS`               | 可选，支持绘图功能的模型列表                                   | `["gemini-2.0-flash-exp"]`                            |
 | `SEARCH_MODELS`              | 可选，支持搜索功能的模型列表                                   | `["gemini-2.0-flash-exp"]`                            |
