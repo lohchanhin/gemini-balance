@@ -1175,6 +1175,44 @@ endblock %} {% block head_extra_styles %}
       </div>
     </div>
 
+    <!-- 外部 Key 狀態 -->
+    <div class="stats-card">
+      <div class="stats-card-header">
+        <h3 class="stats-card-title">
+          <i class="fas fa-key"></i>
+          <span>外部 Key</span>
+        </h3>
+      </div>
+      <div class="p-4">
+        {% if not external_key_configured %}
+        <span class="text-sm text-gray-500">未設定</span>
+        {% elif external_key %}
+        <div class="flex items-center gap-2">
+          <span id="externalKey" class="font-mono break-all">{{ external_key }}</span>
+          <button
+            class="flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200"
+            onclick="copyExternalKey()"
+          >
+            <i class="fas fa-copy"></i>
+            复制
+          </button>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-50 text-success-600">
+            <i class="fas fa-check mr-1"></i>
+            成功
+          </span>
+        </div>
+        {% else %}
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-50 text-danger-600">
+          <i class="fas fa-times mr-1"></i>
+          失败
+        </span>
+        {% if external_key_error %}
+        <span class="text-sm text-danger-600 break-all ml-2">{{ external_key_error }}</span>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
     <!-- 有效密钥区域 -->
     <div class="stats-card mb-6 animate-fade-in" style="animation-delay: 0.2s">
       <div
