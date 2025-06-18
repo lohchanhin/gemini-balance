@@ -221,6 +221,21 @@ function copyKey(key) {
     });
 }
 
+// 复制外部 Key
+function copyExternalKey() {
+  const keyElement = document.getElementById("externalKey");
+  if (!keyElement) return;
+  const key = keyElement.textContent.trim();
+  copyToClipboard(key)
+    .then(() => {
+      showNotification("已成功复制外部密钥");
+    })
+    .catch((err) => {
+      console.error("无法复制外部密钥: ", err);
+      showNotification("外部密钥复制失败", "error");
+    });
+}
+
 // showCopyStatus 函数已废弃。
 
 async function verifyKey(key, button) {

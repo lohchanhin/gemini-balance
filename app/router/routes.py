@@ -9,7 +9,9 @@ from fastapi.templating import Jinja2Templates
 from app.core.security import verify_auth_token
 from app.log.logger import get_routes_logger
 from app.router import error_log_routes, gemini_routes, openai_routes, config_routes, scheduler_routes, stats_routes, version_routes, openai_compatiable_routes, vertex_express_routes
+from app.config.config import settings
 from app.service.key.key_manager import get_key_manager_instance
+from app.service.key.external_key_service import fetch_external_key
 from app.service.stats.stats_service import StatsService
 
 logger = get_routes_logger()
@@ -96,6 +98,16 @@ def setup_page_routes(app: FastAPI) -> None:
             api_stats = await stats_service.get_api_usage_stats()
             logger.info(f"API stats retrieved: {api_stats}")
 
+            external_key = None
+            external_key_error = None
+            external_key_configured = bool(settings.EXTERNAL_KEY_URL)
+            if external_key_configured:
+                try:
+                    external_key = await fetch_external_key()
+                except Exception as e:
+                    logger.error(f"Failed to fetch external key: {e}")
+                    external_key_error = str(e)
+
             logger.info(f"Keys status retrieved successfully. Total keys: {total_keys}")
             return templates.TemplateResponse(
                 "keys_status.html",
@@ -107,6 +119,9 @@ def setup_page_routes(app: FastAPI) -> None:
                     "valid_key_count": valid_key_count,
                     "invalid_key_count": invalid_key_count,
                     "api_stats": api_stats,
+                    "external_key": external_key,
+                    "external_key_error": external_key_error,
+                    "external_key_configured": external_key_configured,
                 },
             )
         except Exception as e:
