@@ -14,6 +14,7 @@ from app.middleware.middleware import setup_middlewares
 from app.router.routes import setup_routers
 from app.scheduler.scheduled_tasks import start_scheduler, stop_scheduler
 from app.service.key.key_manager import get_key_manager_instance
+from app.service.config.config_service import ConfigService
 from app.service.update.update_service import check_for_updates
 from app.utils.helpers import get_current_version
 
@@ -43,6 +44,12 @@ async def _setup_database_and_config(app_settings):
     logger.info("Database initialized successfully")
     await connect_to_db()
     await sync_initial_settings()
+    if settings.EXTERNAL_KEY_URL:
+        try:
+            await ConfigService.refresh_external_key()
+            logger.info("External key refreshed and stored.")
+        except Exception as e:
+            logger.error(f"Failed to refresh external key: {e}")
     await get_key_manager_instance(app_settings.API_KEYS, app_settings.VERTEX_API_KEYS)
     logger.info("Database, config sync, and KeyManager initialized successfully")
 
