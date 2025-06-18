@@ -1320,7 +1320,7 @@ function handleBulkDeleteVertexApiKeys() {
 
 async function refreshExternalKey() {
   try {
-    showNotification("正在刷新外部 Key...", "info");
+    showNotification("正在取得外部 Key...", "info");
     console.log("開始請求外部 Key");
     const response = await fetch("/api/config/refresh-key", { method: "POST" });
     console.log("收到響應，狀態碼:", response.status);
@@ -1343,14 +1343,14 @@ async function refreshExternalKey() {
           input.dispatchEvent(evt);
         }
       }
-      showNotification("外部 Key 已刷新", "success");
+      showNotification("外部 Key 已取得", "success");
     } else {
-      showNotification("刷新成功，但未取得 Key", "warning");
+      showNotification("取得成功，但未獲得 Key", "warning");
     }
   } catch (error) {
-    console.error("刷新外部 Key 失敗:", error);
+    console.error("取得外部 Key 失敗:", error);
     alert("外部 Key 失敗: " + error.message);
-    showNotification("刷新外部 Key 失敗: " + error.message, "error");
+    showNotification("取得外部 Key 失敗: " + error.message, "error");
   }
 }
  

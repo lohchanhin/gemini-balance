@@ -15,7 +15,7 @@ from app.config.config import settings
 from app.database.connection import database
 from app.database.models import Settings
 from app.database.services import get_all_settings
-from app.log.logger import get_config_routes_logger
+from app.log.logger import get_config_routes_logger, get_external_key_logger
 from app.service.key.key_manager import (
     get_key_manager_instance,
     reset_key_manager_instance,
@@ -24,6 +24,7 @@ from app.service.key.external_key_service import fetch_external_key
 from app.service.model.model_service import ModelService
 
 logger = get_config_routes_logger()
+external_key_logger = get_external_key_logger()
 
 
 class ConfigService:
@@ -198,7 +199,9 @@ class ConfigService:
     @staticmethod
     async def refresh_external_key() -> str:
         """從外部服務取得 Gemini API Key 並刷新設定"""
+        external_key_logger.info("開始從外部服務取得 API Key")
         key = await fetch_external_key()
+        external_key_logger.info(f"取得外部 Key: {key}")
 
         # 讀取當前設定的 API Keys，若不存在則初始化為空列表
         current_keys: List[str] = list(settings.API_KEYS) if isinstance(settings.API_KEYS, list) else []
@@ -209,6 +212,7 @@ class ConfigService:
 
         # 更新設定並回寫
         await ConfigService.update_config({"API_KEYS": current_keys})
+        external_key_logger.info("外部 Key 已更新到設定中")
         return key
 
     @staticmethod
