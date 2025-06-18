@@ -1321,13 +1321,16 @@ function handleBulkDeleteVertexApiKeys() {
 async function refreshExternalKey() {
   try {
     showNotification("正在刷新外部 Key...", "info");
+    console.log("開始請求外部 Key");
     const response = await fetch("/api/config/refresh-key", { method: "POST" });
+    console.log("收到響應，狀態碼:", response.status);
     if (!response.ok) {
       const err = await response.json();
       throw new Error(err.detail || `HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
     if (data.key) {
+      console.log(data.key);
       addArrayItemWithValue("API_KEYS", data.key);
       addArrayItemWithValue("EXTERNAL_API_KEYS", data.key);
       const apiKeyContainer = document.getElementById("API_KEYS_container");
@@ -1346,6 +1349,7 @@ async function refreshExternalKey() {
     }
   } catch (error) {
     console.error("刷新外部 Key 失敗:", error);
+    alert("外部 Key 失敗: " + error.message);
     showNotification("刷新外部 Key 失敗: " + error.message, "error");
   }
 }
