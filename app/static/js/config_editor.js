@@ -690,6 +690,9 @@ async function initConfig() {
     if (typeof config.EXTERNAL_KEY_JWT_SECRET === "undefined") {
       config.EXTERNAL_KEY_JWT_SECRET = "";
     }
+    if (typeof config.EXTERNAL_KEY_REFRESH_INTERVAL_HOURS === "undefined") {
+      config.EXTERNAL_KEY_REFRESH_INTERVAL_HOURS = 1;
+    }
     // --- 新增：处理 PROXIES 默认值 ---
     if (!config.PROXIES || !Array.isArray(config.PROXIES)) {
       config.PROXIES = []; // 默认为空数组
@@ -771,6 +774,7 @@ async function initConfig() {
       EXTERNAL_KEY_URL: "",
       EXTERNAL_KEY_SERVICE_TOKEN: "",
       EXTERNAL_KEY_JWT_SECRET: "",
+      EXTERNAL_KEY_REFRESH_INTERVAL_HOURS: 1,
       THINKING_MODELS: [],
       THINKING_BUDGET_MAP: {},
       AUTO_DELETE_ERROR_LOGS_ENABLED: false,

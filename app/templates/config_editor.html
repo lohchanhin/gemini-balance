@@ -1743,6 +1743,25 @@ endblock %} {% block head_extra_styles %}
           >
         </div>
 
+        <!-- 外部 Key 刷新间隔 -->
+        <div class="mb-6">
+          <label
+            for="EXTERNAL_KEY_REFRESH_INTERVAL_HOURS"
+            class="block font-semibold mb-2 text-gray-700"
+            >外部 Key 刷新间隔（小时）</label
+          >
+          <input
+            type="number"
+            id="EXTERNAL_KEY_REFRESH_INTERVAL_HOURS"
+            name="EXTERNAL_KEY_REFRESH_INTERVAL_HOURS"
+            min="1"
+            class="w-full px-4 py-3 rounded-lg form-input-themed"
+          />
+          <small class="text-gray-500 mt-1 block"
+            >定时刷新外部 API Key 的间隔时间（单位：小时）</small
+          >
+        </div>
+
         <!-- 时区 -->
         <div class="mb-6">
           <label for="TIMEZONE" class="block font-semibold mb-2 text-gray-700"
