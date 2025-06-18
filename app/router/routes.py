@@ -127,6 +127,8 @@ def setup_page_routes(app: FastAPI) -> None:
         except ValueError as e:
             error_message = f"KeyManager 未初始化: {e}"
             logger.error(error_message, exc_info=True)
+            stats_service = StatsService()
+            api_stats = await stats_service.get_api_usage_stats()
             return templates.TemplateResponse(
                 "keys_status.html",
                 {
@@ -136,7 +138,7 @@ def setup_page_routes(app: FastAPI) -> None:
                     "total_keys": 0,
                     "valid_key_count": 0,
                     "invalid_key_count": 0,
-                    "api_stats": {},
+                    "api_stats": api_stats,
                     "error_message": error_message,
                 },
                 status_code=500,
@@ -150,6 +152,8 @@ def setup_page_routes(app: FastAPI) -> None:
             else:
                 error_message = "取得密鑰資料時發生錯誤"
             logger.error(f"{error_message}: {msg}", exc_info=True)
+            stats_service = StatsService()
+            api_stats = await stats_service.get_api_usage_stats()
             return templates.TemplateResponse(
                 "keys_status.html",
                 {
@@ -159,7 +163,7 @@ def setup_page_routes(app: FastAPI) -> None:
                     "total_keys": 0,
                     "valid_key_count": 0,
                     "invalid_key_count": 0,
-                    "api_stats": {},
+                    "api_stats": api_stats,
                     "error_message": error_message,
                 },
                 status_code=500,
