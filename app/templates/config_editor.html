@@ -979,6 +979,17 @@ endblock %} {% block head_extra_styles %}
           <small class="text-gray-500 mt-1 block">用於解密外部 Key 的 JWT 密鑰</small>
         </div>
 
+        <!-- 外部 API Key 列表 -->
+        <div class="mb-6">
+          <label for="EXTERNAL_API_KEYS" class="block font-semibold mb-2 text-gray-700"
+            >外部 API Key 列表</label
+          >
+          <div class="array-container" id="EXTERNAL_API_KEYS_container">
+            <!-- 外部 Key 將在此顯示 -->
+          </div>
+          <small class="text-gray-500 mt-1 block">從外部服務取得的 Key</small>
+        </div>
+
         <div class="mb-6 flex justify-end">
           <button
             type="button"
