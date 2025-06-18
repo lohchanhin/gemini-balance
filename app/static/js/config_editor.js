@@ -451,7 +451,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const refreshExternalKeyBtn = document.getElementById("refreshExternalKeyBtn");
   if (refreshExternalKeyBtn) {
-    refreshExternalKeyBtn.addEventListener("click", refreshExternalKey);
+    console.log("Binding click event to refreshExternalKeyBtn");
+    refreshExternalKeyBtn.addEventListener("click", () => {
+      console.log("refreshExternalKeyBtn clicked");
+      refreshExternalKey();
+    });
   }
 
   // Model Helper Modal Event Listeners
