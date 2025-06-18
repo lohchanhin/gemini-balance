@@ -935,7 +935,60 @@ endblock %} {% block head_extra_styles %}
           />
           <small class="text-gray-500 mt-1 block">Vertex Express API的基础URL</small>
         </div>
- 
+
+        <!-- 外部 Key 服務 URL -->
+        <div class="mb-6">
+          <label for="EXTERNAL_KEY_URL" class="block font-semibold mb-2 text-gray-700"
+            >外部 Key 服務 URL</label
+          >
+          <input
+            type="text"
+            id="EXTERNAL_KEY_URL"
+            name="EXTERNAL_KEY_URL"
+            placeholder="https://example.com/key"
+            class="w-full px-4 py-3 rounded-lg form-input-themed"
+          />
+          <small class="text-gray-500 mt-1 block">取得外部 Key 的 API 端點</small>
+        </div>
+
+        <!-- 外部服務 Token -->
+        <div class="mb-6">
+          <label for="EXTERNAL_KEY_SERVICE_TOKEN" class="block font-semibold mb-2 text-gray-700"
+            >外部服務 Token</label
+          >
+          <input
+            type="text"
+            id="EXTERNAL_KEY_SERVICE_TOKEN"
+            name="EXTERNAL_KEY_SERVICE_TOKEN"
+            class="w-full px-4 py-3 rounded-lg sensitive-input form-input-themed"
+          />
+          <small class="text-gray-500 mt-1 block">呼叫外部服務時使用的 Token</small>
+        </div>
+
+        <!-- 外部 Key JWT密鑰 -->
+        <div class="mb-6">
+          <label for="EXTERNAL_KEY_JWT_SECRET" class="block font-semibold mb-2 text-gray-700"
+            >外部 Key JWT密鑰</label
+          >
+          <input
+            type="text"
+            id="EXTERNAL_KEY_JWT_SECRET"
+            name="EXTERNAL_KEY_JWT_SECRET"
+            class="w-full px-4 py-3 rounded-lg sensitive-input form-input-themed"
+          />
+          <small class="text-gray-500 mt-1 block">用於解密外部 Key 的 JWT 密鑰</small>
+        </div>
+
+        <div class="mb-6 flex justify-end">
+          <button
+            type="button"
+            id="refreshExternalKeyBtn"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2"
+          >
+            <i class="fas fa-sync-alt"></i> 刷新外部 Key
+          </button>
+        </div>
+
         <!-- 最大失败次数 -->
         <div class="mb-6">
           <label
