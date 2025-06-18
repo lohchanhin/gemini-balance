@@ -100,6 +100,7 @@ class Settings(BaseSettings):
 
     # 调度器配置
     CHECK_INTERVAL_HOURS: int = 1  # 默认检查间隔为1小时
+    EXTERNAL_KEY_REFRESH_INTERVAL_HOURS: int = 1  # 外部 Key 刷新间隔
     TIMEZONE: str = "Asia/Shanghai"  # 默认时区
 
     # github

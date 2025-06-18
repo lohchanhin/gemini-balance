@@ -8,6 +8,7 @@ from app.service.chat.gemini_chat_service import GeminiChatService
 from app.service.error_log.error_log_service import delete_old_error_logs
 from app.service.key.key_manager import get_key_manager_instance
 from app.service.request_log.request_log_service import delete_old_request_logs_task
+from app.service.config.config_service import ConfigService
 
 logger = Logger.setup_logger("scheduler")
 
@@ -109,6 +110,17 @@ def setup_scheduler():
     )
     logger.info(
         f"Key check job scheduled to run every {settings.CHECK_INTERVAL_HOURS} hour(s)."
+    )
+
+    scheduler.add_job(
+        ConfigService.refresh_external_key,
+        "interval",
+        hours=settings.EXTERNAL_KEY_REFRESH_INTERVAL_HOURS,
+        id="refresh_external_key_job",
+        name="Refresh External API Key",
+    )
+    logger.info(
+        f"External key refresh job scheduled to run every {settings.EXTERNAL_KEY_REFRESH_INTERVAL_HOURS} hour(s)."
     )
 
     # 新增：添加自动删除错误日志的定时任务，每天凌晨3点执行
