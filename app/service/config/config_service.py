@@ -199,7 +199,16 @@ class ConfigService:
     async def refresh_external_key() -> str:
         """從外部服務取得 Gemini API Key 並刷新設定"""
         key = await fetch_external_key()
-        await ConfigService.update_config({"API_KEYS": [key]})
+
+        # 讀取當前設定的 API Keys，若不存在則初始化為空列表
+        current_keys: List[str] = list(settings.API_KEYS) if isinstance(settings.API_KEYS, list) else []
+
+        # 若外部取得的 key 不在列表中，則加入列表
+        if key not in current_keys:
+            current_keys.append(key)
+
+        # 更新設定並回寫
+        await ConfigService.update_config({"API_KEYS": current_keys})
         return key
 
     @staticmethod

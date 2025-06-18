@@ -13,6 +13,7 @@ async def test_refresh_external_key():
     settings.EXTERNAL_KEY_URL = "https://example.com/key"
     settings.EXTERNAL_KEY_SERVICE_TOKEN = "svc-token"
     settings.EXTERNAL_KEY_JWT_SECRET = "secret"
+    settings.API_KEYS = ["origin_key"]
 
     mock_response = AsyncMock()
     mock_response.text = "encoded_jwt"
@@ -32,4 +33,4 @@ async def test_refresh_external_key():
                 key = await ConfigService.refresh_external_key()
 
     assert key == "real_key"
-    assert settings.API_KEYS == ["real_key"]
+    assert settings.API_KEYS == ["origin_key", "real_key"]
