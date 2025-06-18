@@ -220,6 +220,10 @@ def get_openai_compatible_logger():
     return Logger.setup_logger("openai_compatible")
 
 
+def get_external_key_logger():
+    return Logger.setup_logger("external_key_service")
+
+
 def get_error_log_logger():
     return Logger.setup_logger("error_log")
 
