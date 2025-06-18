@@ -448,7 +448,12 @@ document.addEventListener("DOMContentLoaded", function () {
       "click",
       handleBulkDeleteVertexApiKeys
     );
- 
+
+  const refreshExternalKeyBtn = document.getElementById("refreshExternalKeyBtn");
+  if (refreshExternalKeyBtn) {
+    refreshExternalKeyBtn.addEventListener("click", refreshExternalKey);
+  }
+
   // Model Helper Modal Event Listeners
   if (closeModelHelperModalBtn) {
     closeModelHelperModalBtn.addEventListener("click", () =>
@@ -676,6 +681,15 @@ async function initConfig() {
     if (typeof config.VERTEX_EXPRESS_BASE_URL === "undefined") {
       config.VERTEX_EXPRESS_BASE_URL = "";
     }
+    if (typeof config.EXTERNAL_KEY_URL === "undefined") {
+      config.EXTERNAL_KEY_URL = "";
+    }
+    if (typeof config.EXTERNAL_KEY_SERVICE_TOKEN === "undefined") {
+      config.EXTERNAL_KEY_SERVICE_TOKEN = "";
+    }
+    if (typeof config.EXTERNAL_KEY_JWT_SECRET === "undefined") {
+      config.EXTERNAL_KEY_JWT_SECRET = "";
+    }
     // --- 新增：处理 PROXIES 默认值 ---
     if (!config.PROXIES || !Array.isArray(config.PROXIES)) {
       config.PROXIES = []; // 默认为空数组
@@ -754,6 +768,9 @@ async function initConfig() {
       PROXIES: [],
       VERTEX_API_KEYS: [], // 确保默认值存在
       VERTEX_EXPRESS_BASE_URL: "", // 确保默认值存在
+      EXTERNAL_KEY_URL: "",
+      EXTERNAL_KEY_SERVICE_TOKEN: "",
+      EXTERNAL_KEY_JWT_SECRET: "",
       THINKING_MODELS: [],
       THINKING_BUDGET_MAP: {},
       AUTO_DELETE_ERROR_LOGS_ENABLED: false,
@@ -1295,6 +1312,38 @@ function handleBulkDeleteVertexApiKeys() {
     showNotification("列表中未找到您输入的任何 Vertex 密钥进行删除", "info");
   }
   bulkDeleteVertexApiKeyInput.value = "";
+}
+
+async function refreshExternalKey() {
+  try {
+    showNotification("正在刷新外部 Key...", "info");
+    const response = await fetch("/api/config/refresh-key", { method: "POST" });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.key) {
+      const container = document.getElementById("API_KEYS_container");
+      if (container) {
+        container.innerHTML = "";
+        addArrayItemWithValue("API_KEYS", data.key);
+        const input = container.querySelector(
+          `.${ARRAY_INPUT_CLASS}.${SENSITIVE_INPUT_CLASS}`
+        );
+        if (input && configForm) {
+          const evt = new Event("focusout", { bubbles: true, cancelable: true });
+          input.dispatchEvent(evt);
+        }
+      }
+      showNotification("外部 Key 已刷新", "success");
+    } else {
+      showNotification("刷新成功，但未取得 Key", "warning");
+    }
+  } catch (error) {
+    console.error("刷新外部 Key 失敗:", error);
+    showNotification("刷新外部 Key 失敗: " + error.message, "error");
+  }
 }
  
 /**
