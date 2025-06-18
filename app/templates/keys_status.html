@@ -1992,8 +1992,11 @@ endblock %} {% block head_extra_styles %}
 
 {% endblock %} {% block body_scripts %}
 <script>
-  // keys_status.html specific JavaScript initialization is now handled by keys_status.js
-  // The DOMContentLoaded listener in keys_status.js will execute after the DOM is ready.
-  // No inline script needed here anymore.
+  // keys_status.html specific JavaScript initialization is handled by keys_status.js
+  {% if error_message %}
+  document.addEventListener("DOMContentLoaded", function () {
+    showNotification("{{ error_message }}", "error");
+  });
+  {% endif %}
 </script>
 {% endblock %}
