@@ -2,7 +2,7 @@
 路由配置模块，负责设置和配置应用程序的路由
 """
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -109,9 +109,46 @@ def setup_page_routes(app: FastAPI) -> None:
                     "api_stats": api_stats,
                 },
             )
+        except ValueError as e:
+            error_message = f"KeyManager 未初始化: {e}"
+            logger.error(error_message, exc_info=True)
+            return templates.TemplateResponse(
+                "keys_status.html",
+                {
+                    "request": request,
+                    "valid_keys": {},
+                    "invalid_keys": {},
+                    "total_keys": 0,
+                    "valid_key_count": 0,
+                    "invalid_key_count": 0,
+                    "api_stats": {},
+                    "error_message": error_message,
+                },
+                status_code=500,
+            )
         except Exception as e:
-            logger.error(f"Error retrieving keys status or API stats: {str(e)}")
-            raise
+            msg = str(e)
+            if "database" in msg.lower():
+                error_message = "資料庫連線錯誤"
+            elif "external" in msg.lower() or "外部" in msg:
+                error_message = "外部 Key 取得失敗"
+            else:
+                error_message = "取得密鑰資料時發生錯誤"
+            logger.error(f"{error_message}: {msg}", exc_info=True)
+            return templates.TemplateResponse(
+                "keys_status.html",
+                {
+                    "request": request,
+                    "valid_keys": {},
+                    "invalid_keys": {},
+                    "total_keys": 0,
+                    "valid_key_count": 0,
+                    "invalid_key_count": 0,
+                    "api_stats": {},
+                    "error_message": error_message,
+                },
+                status_code=500,
+            )
             
     @app.get("/config", response_class=HTMLResponse)
     async def config_page(request: Request):
