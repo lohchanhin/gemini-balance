@@ -66,7 +66,9 @@ async def refresh_external_key_route(request: Request):
         logger.warning("Unauthorized attempt to refresh external key")
         return RedirectResponse(url="/", status_code=302)
     try:
+        logger.info("Received request to fetch external key")
         key = await ConfigService.refresh_external_key()
+        logger.info("External key fetched successfully")
         return {"success": True, "key": key}
     except Exception as e:
         logger.error(f"Error refreshing external key: {e}", exc_info=True)
