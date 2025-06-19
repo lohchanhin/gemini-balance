@@ -6,7 +6,7 @@ import datetime
 import json
 from typing import Any, Dict, List
 
-from dotenv import find_dotenv, load_dotenv
+from dotenv import find_dotenv, load_dotenv, set_key, dotenv_values
 from fastapi import HTTPException
 from sqlalchemy import insert, update
 
@@ -21,6 +21,7 @@ from app.service.key.key_manager import (
     reset_key_manager_instance,
 )
 from app.service.model.model_service import ModelService
+from app.service.key import external_key_service
 
 logger = get_config_routes_logger()
 
@@ -194,10 +195,39 @@ class ConfigService:
                 "not_found_keys": not_found_keys,
             }
 
+
+    @staticmethod
+    async def fetch_and_update_external_key() -> bool:
+        """從外部服務獲取金鑰並更新設定。"""
+        try:
+            key = await external_key_service.fetch_key()
+        except Exception as e:
+            logger.error(f"Failed to fetch external key: {e}")
+            return False
+        env_path = find_dotenv()
+        if not env_path:
+            logger.error(".env 文件未找到，無法更新 API_KEYS")
+            return False
+        env_vals = dotenv_values(env_path)
+        try:
+            current = json.loads(env_vals.get("API_KEYS", "[]"))
+        except Exception:
+            current = [k.strip().strip('"') for k in env_vals.get("API_KEYS", "").strip("[]").split(',') if k.strip()]
+        if key not in current:
+            current.append(key)
+        set_key(env_path, "API_KEYS", json.dumps(current))
+        load_dotenv(env_path, override=True)
+        settings.API_KEYS = current
+        await reset_key_manager_instance()
+        await get_key_manager_instance(settings.API_KEYS, settings.VERTEX_API_KEYS)
+        logger.info("External key updated and KeyManager rebuilt.")
+        return True
+
     @staticmethod
     async def reset_config() -> Dict[str, Any]:
         """
         重置配置：优先从系统环境变量加载，然后从 .env 文件加载，
+
         更新内存中的 settings 对象，并刷新 KeyManager。
 
         Returns:
